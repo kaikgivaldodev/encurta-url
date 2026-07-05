@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encurtador de URL</title>
+    <link rel="shortcut icon" href="img/link.png" />
+
+    <link rel="stylesheet" href="styles.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Banner de Cookies LGPD -->
+    <div id="cookie-banner" class="cookie-banner">
+        <p>Utilizamos cookies para melhorar sua experiência. Ao continuar, você concorda com nossos <a href="#" onclick="openModal('terms-modal')">Termos de Uso</a> e <a href="#" onclick="openModal('privacy-modal')">Política de Privacidade</a>.</p>
+        <button class="btn btn-primary btn-sm" onclick="acceptCookies()">Aceitar</button>
+    </div>
+
+    <div class="container">
+        <!-- 1. LANDING PAGE -->
+        <section id="view-landing" class="view-section active">
+            <div class="landing-card">
+                <header class="landing-header">
+                    <h1 class="logo">Encurta<span>URL</span></h1>
+                    <div class="nav-buttons">
+                        <button class="btn btn-link" onclick="showView('view-login'); switchAuthTab('login')">Entrar</button>
+                        <button class="btn btn-primary btn-sm" onclick="showView('view-login'); switchAuthTab('register')">Cadastrar</button>
+                    </div>
+                </header>
+                
+                <div class="hero-content">
+                    <h2 class="hero-title">Simplifique seus links. Analise seus cliques.</h2>
+                    <p class="hero-subtitle">Encurte URLs longas, gerencie com facilidade, integre via API com seus bots e acompanhe estatísticas detalhadas em tempo real.</p>
+                    <button class="btn btn-primary btn-lg" onclick="showView('view-login'); switchAuthTab('register')">Começar Agora</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. LOGIN / REGISTRO -->
+        <section id="view-login" class="view-section">
+            <div class="box">
+                <div class="header-actions">
+                    <button class="btn btn-secondary btn-sm" onclick="showView('view-landing')">Voltar</button>
+                </div>
+                <h2 class="title" id="auth-title">Acessar Conta</h2>
+                
+                <!-- Abas -->
+                <div class="auth-tabs">
+                    <button id="tab-login" class="tab-btn active" onclick="switchAuthTab('login')">Login</button>
+                    <button id="tab-register" class="tab-btn" onclick="switchAuthTab('register')">Cadastro</button>
+                </div>
+
+                <!-- Form Login -->
+                <form id="form-login" onsubmit="handleAuth(event, 'login')">
+                    <div class="input-group">
+                        <input type="email" id="login-email" placeholder="E-mail" required />
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="login-password" placeholder="Senha" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+                </form>
+
+                <!-- Form Cadastro -->
+                <form id="form-register" class="hidden" onsubmit="handleAuth(event, 'register')">
+                    <div class="input-group">
+                        <input type="email" id="register-email" placeholder="E-mail" required />
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="register-password" placeholder="Senha (Min. 8 caracteres, A-Z, a-z, @)" required oninput="validatePasswordStrength(this.value)" />
+                        <div id="password-strength" class="password-strength"></div>
+                    </div>
+                    <div class="terms-checkbox">
+                        <input type="checkbox" id="register-terms" required />
+                        <label for="register-terms">Eu aceito os <a href="#" onclick="openModal('terms-modal')">Termos de Uso</a> e <a href="#" onclick="openModal('privacy-modal')">Política de Privacidade</a>.</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Criar Conta</button>
+                </form>
+
+                <div class="divider">ou</div>
+
+                <!-- Login com Google -->
+                <button class="btn btn-google btn-block" onclick="loginWithGoogle()">
+                    <svg viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.136 4.114A5.99 5.99 0 0 1 7.99 12.5a5.99 5.99 0 0 1 6.002-6.015c1.45 0 2.76.513 3.79 1.488l3.18-3.18C18.913 2.825 15.772 1.636 12 1.636c-5.748 0-10.4 4.652-10.4 10.4 0 5.748 4.652 10.4 10.4 10.4 6 0 9.873-4.227 9.873-10.036 0-.622-.057-1.228-.158-1.782l-9.475-.333Z"/>
+                    </svg>
+                    <span>Entrar com o Google</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- 3. DASHBOARD -->
+        <section id="view-dashboard" class="view-section">
+            <div class="box dashboard-box">
+                <div class="dashboard-header">
+                    <h3>Olá, <span id="user-display-email">usuario@teste.com</span></h3>
+                    <button class="btn btn-secondary btn-sm" onclick="logout()">Sair</button>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <h4>Links Criados</h4>
+                        <p id="stat-links-count">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Cliques Totais</h4>
+                        <p id="stat-clicks-count">0</p>
+                    </div>
+                </div>
+
+                <!-- Encurtador Interno -->
+                <div class="input-wrapper">
+                    <input class="input-url" id="dashboard-url" type="text" placeholder="Cole sua URL para encurtar..." autocomplete="off" />
+                </div>
+                <div class="box-buttons">
+                    <button class="btn btn-primary" onclick="encurtarUrl('dashboard-url')">Encurtar</button>
+                    <button class="btn btn-secondary" onclick="copiar('dashboard-url')">Copiar</button>
+                </div>
+
+                <!-- Seção API para Bots -->
+                <div class="api-section">
+                    <h4>Chave de API (Integração de Bots)</h4>
+                    <div class="api-key-container">
+                        <input type="text" id="api-key-input" readonly value="Clique em gerar..." />
+                        <button class="btn btn-secondary btn-sm" onclick="generateApiKey()">Gerar</button>
+                    </div>
+                    <small>Use esta chave enviando-a no Header `Authorization: Bearer <sua_chave>`</small>
+                </div>
+
+                <!-- Histórico de Links -->
+                <div class="history-section">
+                    <h4>Seus Links</h4>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Original</th>
+                                    <th>Curto</th>
+                                    <th>Cliques</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-table-body">
+                                <tr>
+                                    <td colspan="4" class="text-muted text-center">Nenhum link criado ainda.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- MODAL: Termos de Uso -->
+    <div id="terms-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('terms-modal')">&times;</span>
+            <h3>Termos de Uso</h3>
+            <div class="modal-body">
+                <p><strong>1. Aceitação dos Termos</strong><br>Ao utilizar nossa plataforma de encurtamento de URL, você concorda em cumprir e ser regido por estes Termos de Uso.</p>
+                <p><strong>2. Uso Permitido</strong><br>Você se compromete a não utilizar o serviço para encurtar links que direcionem a conteúdos maliciosos, ilegais, vírus ou phishing. O descumprimento resultará na suspensão imediata da sua conta.</p>
+                <p><strong>3. Responsabilidade</strong><br>Não nos responsabilizamos pelo conteúdo dos links gerados pelos usuários.</p>
+            </div>
+            <button class="btn btn-primary btn-sm btn-block" onclick="closeModal('terms-modal')">Fechar</button>
+        </div>
+    </div>
+
+    <!-- MODAL: Política de Privacidade -->
+    <div id="privacy-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('privacy-modal')">&times;</span>
+            <h3>Política de Privacidade</h3>
+            <div class="modal-body">
+                <p><strong>1. Coleta de Dados</strong><br>Coletamos seu endereço de e-mail no cadastro e informações básicas de cliques (IP, país de origem e data/hora) para fins estatísticos e prevenção de abusos.</p>
+                <p><strong>2. Armazenamento Seguro</strong><br>Em conformidade com a LGPD, seus dados pessoais são armazenados de forma segura e criptografada e não são compartilhados com terceiros sob nenhuma hipótese.</p>
+                <p><strong>3. Seus Direitos</strong><br>Você possui direito total a solicitar a exclusão de sua conta e de todos os seus dados a qualquer momento.</p>
+            </div>
+            <button class="btn btn-primary btn-sm btn-block" onclick="closeModal('privacy-modal')">Fechar</button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
