@@ -1,4 +1,27 @@
+# Dependências
 node_modules/
-dist/
+
+# Variáveis de ambiente e segredos
+.env
+.env.local
+.env.*.local
+
+# Supabase (CLI local)
+supabase/.temp/
+supabase/.branches/
+
+# Sistema
 .DS_Store
+Thumbs.db
+
+# Editores
+.vscode/
+.idea/
+
+# Logs
 *.log
+npm-debug.log*
+
+# Build (caso adicione um bundler no futuro)
+dist/
+build/

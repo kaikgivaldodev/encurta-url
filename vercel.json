@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/:slug([a-zA-Z0-9_-]+)",
+      "destination": "https://vysxsmmdhcrmzcvkvuvn.supabase.co/functions/v1/r/:slug"
+    }
+  ]
+}
