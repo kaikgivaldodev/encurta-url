@@ -1,4 +1,4 @@
-﻿// ============================================================
+// ============================================================
 // script.js -- EncurtaURL Frontend Logic
 // Supabase real + Chart.js + Dashboard Premium
 // ============================================================
@@ -51,7 +51,7 @@ async function initAuth() {
 
 async function handleSessionReady(session) {
     currentUser = session.user;
-    const meta = session.user.user_metadata;
+    const meta = session.user.user_metadata || {};
     const name = meta.full_name || meta.name || session.user.email.split('@')[0];
     const email = session.user.email;
     const initials = name.charAt(0).toUpperCase();
@@ -62,6 +62,17 @@ async function handleSessionReady(session) {
     if (elName) elName.textContent = name;
     if (elEmail) elEmail.textContent = email;
     if (elAvatar) elAvatar.textContent = initials;
+
+    // Preencher chave de API persistida se existir
+    const apiKeyInput = document.getElementById('api-key-input');
+    if (apiKeyInput) {
+        if (meta.api_key) {
+            apiKeyInput.value = meta.api_key;
+            updateCodeSnippet(meta.api_key);
+        } else {
+            apiKeyInput.value = 'Nenhuma chave gerada ainda.';
+        }
+    }
 
     showView('view-dashboard');
     await loadUserLinks();
@@ -146,17 +157,32 @@ async function loadUserLinks() {
 }
 
 function renderLinksTable() {
+    renderLinksTableFiltered(userLinks);
+}
+
+function filterLinks() {
+    const queryEl = document.getElementById('search-links-input');
+    const query = queryEl ? queryEl.value.toLowerCase().trim() : '';
+    const filtered = userLinks.filter(link => {
+        return link.slug.toLowerCase().includes(query) || link.url_original.toLowerCase().includes(query);
+    });
+    renderLinksTableFiltered(filtered);
+}
+
+function renderLinksTableFiltered(links) {
     const tbody = document.getElementById('history-table-body');
     if (!tbody) return;
 
-    if (userLinks.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="text-muted text-center">Nenhum link criado ainda. Comece encurtando uma URL!</td></tr>';
+    if (links.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-muted text-center">Nenhum link criado ainda ou correspondente à busca.</td></tr>';
         return;
     }
 
-    const baseUrl = 'https://encurta-url-rho.vercel.app';
+    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+        ? 'https://encurta-url-rho.vercel.app' 
+        : window.location.origin;
 
-    tbody.innerHTML = userLinks.map(link => {
+    tbody.innerHTML = links.map(link => {
         const short = baseUrl + '/' + link.slug;
         const orig = escapeHtml(truncate(link.url_original, 45));
         const clicks = link.click_count || 0;
@@ -338,35 +364,91 @@ function updateClicksChart() {
     clicksChart.update('active');
 }
 
-// 8. SIDEBAR TABS
+//// 8. SIDEBAR TABS
 function switchDashboardTab(tab) {
     document.querySelectorAll('.dashboard-sidebar .menu-item').forEach(function(el) {
         el.classList.remove('active');
     });
-    var activeEl = document.querySelector('.dashboard-sidebar .menu-item[href="#' + tab + '"]');
-    if (activeEl) activeEl.classList.add('active');
+    var clickedBtn = document.querySelector('.dashboard-sidebar .menu-item[onclick*="switchDashboardTab(\'' + tab + '\')"]');
+    if (clickedBtn) clickedBtn.classList.add('active');
 
-    if (tab === 'links') {
-        var el = document.getElementById('section-my-links');
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const titleEl = document.querySelector('.dashboard-top-nav h2');
+    const descEl = document.querySelector('.dashboard-top-nav p');
+    if (tab === 'overview') {
+        if (titleEl) titleEl.textContent = 'Visão Geral';
+        if (descEl) descEl.textContent = 'Acompanhe a performance dos seus links em tempo real.';
+    } else if (tab === 'links') {
+        if (titleEl) titleEl.textContent = 'Meus Links';
+        if (descEl) descEl.textContent = 'Gerencie, copie e exclua seus links encurtados.';
     } else if (tab === 'api') {
-        var el = document.getElementById('section-api-developer');
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-        var el = document.querySelector('.dashboard-main');
-        if (el) el.scrollTo({ top: 0, behavior: 'smooth' });
+        if (titleEl) titleEl.textContent = 'API Developer';
+        if (descEl) descEl.textContent = 'Integre seu encurtador com automações externas e bots.';
+    }
+
+    document.querySelectorAll('.dashboard-tab-content').forEach(function(content) {
+        content.classList.remove('active');
+    });
+    const activeTab = document.getElementById('tab-' + tab);
+    if (activeTab) activeTab.classList.add('active');
+
+    if (tab === 'overview' && clicksChart) {
+        clicksChart.resize();
     }
     return false;
 }
 
 // 9. API KEY
-function generateApiKey() {
+async function generateApiKey() {
     if (!currentUser) return;
     var array = new Uint8Array(18);
-    crypto.getRandomValues(array);
+    window.crypto.getRandomValues(array);
     var key = 'sk_live_' + Array.from(array).map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
-    document.getElementById('api-key-input').value = key;
-    showToast('Nova chave de API gerada!');
+    
+    showToast('Salvando chave de API...');
+    
+    const { error } = await window.supabase.auth.updateUser({
+        data: { api_key: key }
+    });
+    
+    if (error) {
+        showToast('Erro ao salvar chave de API.', true);
+        console.error(error);
+    } else {
+        document.getElementById('api-key-input').value = key;
+        showToast('Nova chave de API gerada e salva!');
+        updateCodeSnippet(key);
+    }
+}
+
+function copyApiKey() {
+    const input = document.getElementById('api-key-input');
+    if (input && input.value && input.value !== 'Clique em gerar chave de API...' && input.value !== 'Nenhuma chave gerada ainda.') {
+        navigator.clipboard.writeText(input.value);
+        showToast('Chave de API copiada!');
+    } else {
+        showToast('Gere uma chave de API primeiro.', true);
+    }
+}
+
+function updateCodeSnippet(key) {
+    const codeEl = document.getElementById('api-code-snippet');
+    if (codeEl) {
+        codeEl.textContent = `curl -X POST "https://vysxsmmdhcrmzcvkvuvn.supabase.co/functions/v1/encurtar" \\
+  -H "Authorization: Bearer ${key}" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "url_original": "https://site.com/produto/123",
+    "slug_customizado": "promo-verao"
+  }'`;
+    }
+}
+
+function copyCodeSnippet() {
+    const codeEl = document.getElementById('api-code-snippet');
+    if (codeEl) {
+        navigator.clipboard.writeText(codeEl.textContent);
+        showToast('Código de exemplo copiado!');
+    }
 }
 
 // 10. VALIDACAO DE SENHA

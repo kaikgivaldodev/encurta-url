@@ -390,106 +390,139 @@
                         <p class="text-muted">Acompanhe a performance dos seus links em tempo real.</p>
                     </div>
                 </header>
-
-                <!-- Bento Grid de Estatísticas -->
-                <div class="dashboard-bento-grid">
-                    <div class="bento-stat-card">
-                        <span class="stat-icon">🔗</span>
-                        <span class="stat-title">Links Encurtados</span>
-                        <h3 id="stat-links-count">0</h3>
-                    </div>
-                    <div class="bento-stat-card">
-                        <span class="stat-icon">📈</span>
-                        <span class="stat-title">Cliques Totais</span>
-                        <h3 id="stat-clicks-count">0</h3>
-                    </div>
-                    <div class="bento-stat-card">
-                        <span class="stat-icon">🎯</span>
-                        <span class="stat-title">Taxa de Conversão</span>
-                        <h3 id="stat-conversion-rate">94.8%</h3>
-                    </div>
-                    <div class="bento-stat-card">
-                        <span class="stat-icon">⚡</span>
-                        <span class="stat-title">Tempo de Resposta</span>
-                        <h3>&lt; 50ms</h3>
-                    </div>
-                </div>
-
-                <!-- Formulário Encurtador Avançado + Gráfico de Acessos -->
-                <div class="dashboard-row">
-                    <!-- Form Card -->
-                    <div class="dashboard-card form-card">
-                        <h3>Criar Link Curto</h3>
-                        <div class="input-group">
-                            <label for="dashboard-url">URL Original</label>
-                            <input type="text" id="dashboard-url" placeholder="Cole seu link longo aqui (ex: https://site.com/...)" required />
+                <!-- Aba 1: Visão Geral -->
+                <div id="tab-overview" class="dashboard-tab-content active">
+                    <!-- Bento Grid de Estatísticas -->
+                    <div class="dashboard-bento-grid">
+                        <div class="bento-stat-card">
+                            <span class="stat-icon">🔗</span>
+                            <span class="stat-title">Links Encurtados</span>
+                            <h3 id="stat-links-count">0</h3>
                         </div>
-                        <div class="input-group">
-                            <label for="dashboard-slug">Slug Personalizado (Opcional)</label>
-                            <div class="slug-input-wrapper">
-                                <span class="slug-prefix">encurta.vercel.app/</span>
-                                <input type="text" id="dashboard-slug" placeholder="ex: verao" />
+                        <div class="bento-stat-card">
+                            <span class="stat-icon">📈</span>
+                            <span class="stat-title">Cliques Totais</span>
+                            <h3 id="stat-clicks-count">0</h3>
+                        </div>
+                        <div class="bento-stat-card">
+                            <span class="stat-icon">🎯</span>
+                            <span class="stat-title">Taxa de Conversão</span>
+                            <h3 id="stat-conversion-rate">94.8%</h3>
+                        </div>
+                        <div class="bento-stat-card">
+                            <span class="stat-icon">⚡</span>
+                            <span class="stat-title">Tempo de Resposta</span>
+                            <h3>&lt; 50ms</h3>
+                        </div>
+                    </div>
+
+                    <!-- Formulário Encurtador Avançado + Gráfico de Acessos -->
+                    <div class="dashboard-row">
+                        <!-- Form Card -->
+                        <div class="dashboard-card form-card">
+                            <h3>Criar Link Curto</h3>
+                            <div class="input-group">
+                                <label for="dashboard-url">URL Original</label>
+                                <input type="text" id="dashboard-url" placeholder="Cole seu link longo aqui (ex: https://site.com/...)" required />
                             </div>
-                        </div>
-                        
-                        <!-- Accordion de Configurações Avançadas -->
-                        <details class="advanced-settings-accordion">
-                            <summary>Configurações Avançadas (Opcional)</summary>
-                            <div class="accordion-content">
-                                <div class="input-group">
-                                    <label for="dashboard-expire">Data de Expiração</label>
-                                    <input type="date" id="dashboard-expire" />
-                                </div>
-                                <div class="input-group">
-                                    <label for="dashboard-password">Senha de Proteção</label>
-                                    <input type="password" id="dashboard-password" placeholder="Digite uma senha de proteção" />
+                            <div class="input-group">
+                                <label for="dashboard-slug">Slug Personalizado (Opcional)</label>
+                                <div class="slug-input-wrapper">
+                                    <span class="slug-prefix">encurta.vercel.app/</span>
+                                    <input type="text" id="dashboard-slug" placeholder="ex: verao" />
                                 </div>
                             </div>
-                        </details>
-                        
-                        <button class="btn btn-primary btn-block" onclick="encurtarUrlDashboard()">Encurtar URL 🚀</button>
-                    </div>
+                            
+                            <!-- Accordion de Configurações Avançadas -->
+                            <details class="advanced-settings-accordion">
+                                <summary>Configurações Avançadas (Opcional)</summary>
+                                <div class="accordion-content">
+                                    <div class="input-group">
+                                        <label for="dashboard-expire">Data de Expiração</label>
+                                        <input type="date" id="dashboard-expire" />
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="dashboard-password">Senha de Proteção</label>
+                                        <input type="password" id="dashboard-password" placeholder="Digite uma senha de proteção" />
+                                    </div>
+                                </div>
+                            </details>
+                            
+                            <button class="btn btn-primary btn-block" onclick="encurtarUrlDashboard()">Encurtar URL 🚀</button>
+                        </div>
 
-                    <!-- Chart Card -->
-                    <div class="dashboard-card chart-card">
-                        <h3>Cliques ao Longo do Tempo</h3>
-                        <div class="chart-container" style="position: relative; height: 100%; width: 100%;">
-                            <canvas id="clicks-chart"></canvas>
+                        <!-- Chart Card -->
+                        <div class="dashboard-card chart-card">
+                            <h3>Cliques ao Longo do Tempo</h3>
+                            <div class="chart-container">
+                                <canvas id="clicks-chart"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Tabela de Links Recentes -->
-                <div class="dashboard-card table-card" id="section-my-links">
-                    <h3>Meus Links Encurtados</h3>
-                    <div class="table-responsive">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>URL Original</th>
-                                    <th>Link Encurtado</th>
-                                    <th>Cliques</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="history-table-body">
-                                <tr>
-                                    <td colspan="4" class="text-muted text-center">Nenhum link criado ainda.</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <!-- Aba 2: Meus Links -->
+                <div id="tab-links" class="dashboard-tab-content">
+                    <!-- Tabela de Links Recentes -->
+                    <div class="dashboard-card table-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+                            <h3>Meus Links Encurtados</h3>
+                            <div style="display: flex; gap: 12px; width: 100%; max-width: 320px;">
+                                <input type="text" id="search-links-input" placeholder="🔍 Buscar por slug ou URL..." oninput="filterLinks()" style="width: 100%; padding: 10px 16px; border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); color: var(--text-primary); font-size: 13px; outline: none;" />
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>URL Original</th>
+                                        <th>Link Encurtado</th>
+                                        <th>Cliques</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="history-table-body">
+                                    <tr>
+                                        <td colspan="4" class="text-muted text-center">Nenhum link criado ainda.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
-                <!-- API Developer Integration -->
-                <div class="dashboard-card api-card" id="section-api-developer">
-                    <h3>API Developer (Integração de Bots)</h3>
-                    <p class="text-muted" style="margin-bottom: 20px;">Use a nossa API restrita para integrar seu encurtador com bots de Telegram, Discord ou automações externas.</p>
-                    <div class="api-key-container">
-                        <input type="text" id="api-key-input" readonly value="Clique em gerar chave de API..." />
-                        <button class="btn btn-secondary" onclick="generateApiKey()">Gerar Chave</button>
+                <!-- Aba 3: API Developer -->
+                <div id="tab-api" class="dashboard-tab-content">
+                    <!-- API Developer Integration -->
+                    <div class="dashboard-card api-card">
+                        <h3>API Developer (Integração de Bots)</h3>
+                        <p class="text-muted" style="margin-bottom: 20px;">Use a nossa API restrita para integrar seu encurtador com bots de Telegram, Discord ou automações externas.</p>
+                        <div class="api-key-container">
+                            <input type="text" id="api-key-input" readonly value="Clique em gerar chave de API..." />
+                            <button class="btn btn-secondary" onclick="generateApiKey()">Gerar Chave</button>
+                            <button class="btn btn-primary" onclick="copyApiKey()">Copiar Chave</button>
+                        </div>
+                        <small class="text-muted" style="margin-top: 10px; display: block;">Envie a chave no cabeçalho <code>Authorization: Bearer &lt;sua_chave&gt;</code> em suas requisições.</small>
+                        
+                        <div class="api-documentation" style="margin-top: 36px; border-top: 1px solid var(--border-color); padding-top: 28px;">
+                            <h4 style="margin-bottom: 12px; font-size: 16px; font-weight: 700;">Documentação da API</h4>
+                            <p class="text-muted" style="margin-bottom: 20px; font-size: 14px; line-height: 1.6;">Integre o encurtador de forma rápida. Para criar novos links programaticamente, faça uma requisição POST para o endpoint abaixo:</p>
+                            
+                            <div class="code-snippet-wrapper" style="background: #09090b; border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; margin-top: 16px;">
+                                <div class="code-header" style="background: rgba(255,255,255,0.02); padding: 12px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-size: 12px; font-family: monospace; color: var(--text-secondary);">EXEMPLO DE REQUISIÇÃO (cURL)</span>
+                                    <button onclick="copyCodeSnippet()" class="btn-copy-sm" style="padding: 4px 10px; font-size: 12px;">Copiar Comando</button>
+                                </div>
+                                <pre style="padding: 20px; margin: 0; overflow-x: auto; font-family: monospace; font-size: 13px; line-height: 1.6; color: var(--primary-color);"><code id="api-code-snippet">curl -X POST "https://vysxsmmdhcrmzcvkvuvn.supabase.co/functions/v1/encurtar" \
+  -H "Authorization: Bearer &lt;SUA_CHAVE_API&gt;" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url_original": "https://site.com/produto/123",
+    "slug_customizado": "promo-verao"
+  }'</code></pre>
+                            </div>
+                        </div>
                     </div>
-                    <small class="text-muted" style="margin-top: 10px; display: block;">Envie a chave no cabeçalho <code>Authorization: Bearer &lt;sua_chave&gt;</code> em suas requisições.</small>
                 </div>
             </main>
         </div>

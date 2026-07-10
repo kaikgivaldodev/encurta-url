@@ -24,17 +24,51 @@ serve(async (req) => {
   }
 
   try {
-    // Inicializa o cliente do Supabase com as credenciais internas da Function
-    const supabaseClient = createClient(
+    const authHeader = req.headers.get('Authorization') ?? '';
+    const token = authHeader.replace(/^Bearer\s+/, '').trim();
+
+    let userId: string | null = null;
+    
+    // Inicializa o cliente Admin para operações de sistema
+    const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      { auth: { persistSession: false } }
     )
+
+    if (token.startsWith('sk_live_')) {
+      // 1. Autenticação via Chave de API
+      const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers()
+      if (listError) {
+        console.error('[Edge Function] Erro ao listar usuários:', listError)
+      } else if (users) {
+        const found = users.find((u) => u.user_metadata?.api_key === token)
+        if (found) {
+          userId = found.id
+        }
+      }
+
+      if (!userId) {
+        return new Response(JSON.stringify({ error: 'Chave de API inválida ou expirada.' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
+    } else {
+      // 2. Autenticação via JWT de Sessão Padrão
+      const supabaseClient = createClient(
+        Deno.env.get('SUPABASE_URL') ?? '',
+        Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+        { global: { headers: { Authorization: authHeader } } }
+      )
+      const { data: { user } } = await supabaseClient.auth.getUser()
+      userId = user ? user.id : null
+    }
 
     // Coleta os dados enviados pelo usuário
     const { url_original, slug_customizado } = await req.json()
 
-    // 1. Validação básica da URL
+    // 3. Validação básica da URL
     if (!url_original) {
       return new Response(JSON.stringify({ error: 'A URL original é obrigatória.' }), {
         status: 400,
@@ -42,15 +76,11 @@ serve(async (req) => {
       })
     }
 
-    // 2. Define o slug (usa o customizado ou gera um aleatório)
+    // 4. Define o slug (usa o customizado ou gera um aleatório)
     let slug = slug_customizado ? slug_customizado.trim() : gerarSlugAleatorio();
 
-    // 3. Tenta obter o ID do usuário autenticado (se houver JWT válido)
-    const { data: { user } } = await supabaseClient.auth.getUser()
-    const userId = user ? user.id : null
-
-    // 4. Salva no Banco de Dados
-    const { data, error } = await supabaseClient
+    // 5. Salva no Banco de Dados usando o cliente Admin (para aceitar o user_id mesmo sem sessão JWT ativa no RLS)
+    const { data, error } = await supabaseAdmin
       .from('links')
       .insert([
         { 
@@ -70,12 +100,12 @@ serve(async (req) => {
       })
     }
 
-    // 5. Retorna o sucesso com o link encurtado
+    // 6. Retorna o sucesso com o link encurtado
     return new Response(
       JSON.stringify({ 
         success: true, 
         slug: data.slug,
-        url_encurtada: `https://seu-dominio.com/${data.slug}`, // Substitua pelo seu domínio futuro
+        url_encurtada: `https://encurta-url-rho.vercel.app/${data.slug}`,
         url_original: data.url_original 
       }),
       { 
