@@ -11,136 +11,463 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="supabase-init.js"></script>
 </head>
 <body>
-    <!-- Banner de Cookies LGPD -->
+    <!-- Banner de Cookies LGPD Premium -->
     <div id="cookie-banner" class="cookie-banner">
-        <p>Utilizamos cookies para melhorar sua experiência. Ao continuar, você concorda com nossos <a href="#" onclick="openModal('terms-modal')">Termos de Uso</a> e <a href="#" onclick="openModal('privacy-modal')">Política de Privacidade</a>.</p>
-        <button class="btn btn-primary btn-sm" onclick="acceptCookies()">Aceitar</button>
+        <span class="cookie-icon">🍪</span>
+        <p>Utilizamos cookies essenciais para o funcionamento da plataforma e cookies de análise/publicidade para melhorar sua experiência e exibir anúncios relevantes via Google AdSense. Saiba mais em nossa <a href="#" onclick="showView('view-privacy')">Política de Privacidade</a>.</p>
+        <div class="cookie-actions">
+            <button class="btn btn-secondary btn-sm" onclick="rejectNonEssentialCookies()">Apenas Essenciais</button>
+            <button class="btn btn-primary btn-sm" onclick="acceptCookies()">Aceitar Tudo</button>
+        </div>
     </div>
 
-    <div class="container">
-        <!-- 1. LANDING PAGE -->
-        <section id="view-landing" class="view-section active">
-            <div class="landing-card">
-                <header class="landing-header">
-                    <h1 class="logo">Encurta<span>URL</span></h1>
-                    <div class="nav-buttons">
-                        <button class="btn btn-link" onclick="showView('view-login'); switchAuthTab('login')">Entrar</button>
-                        <button class="btn btn-primary btn-sm" onclick="showView('view-login'); switchAuthTab('register')">Cadastrar</button>
+    <!-- 1. LANDING PAGE -->
+    <section id="view-landing" class="view-section active">
+        <!-- Header Fixo da Landing Page (De fora a fora) -->
+        <header class="landing-header-sticky">
+            <div class="header-container">
+                <div class="logo">Encurta<span>URL</span></div>
+                <nav class="nav-links">
+                    <a href="#features">Recursos</a>
+                    <a href="#pricing">Planos</a>
+                    <a href="#" onclick="showView('view-blog')">Blog</a>
+                </nav>
+                <div class="nav-buttons">
+                    <button class="btn btn-link" onclick="showView('view-login'); switchAuthTab('login')">Entrar</button>
+                    <button class="btn btn-primary btn-sm" onclick="showView('view-login'); switchAuthTab('register')">Criar Conta</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="landing-page-wrapper">
+            <!-- Hero Section -->
+            <div class="hero-section">
+                <div class="hero-container">
+                    <div class="hero-text">
+                        <span class="badge">🚀 Encurtador Premium de Links</span>
+                        <h1 class="hero-title">Simplifique seus links.<br>Multiplique seus <span>cliques</span>.</h1>
+                        <p class="hero-subtitle">Encurte URLs longas, crie slugs customizados, acompanhe estatísticas detalhadas de acessos em tempo real e integre seus bots com uma API robusta.</p>
+                        <div class="hero-actions">
+                            <button class="btn btn-primary btn-lg" onclick="showView('view-login'); switchAuthTab('register')">Começar Grátis</button>
+                            <a href="#features" class="btn btn-secondary btn-lg">Conhecer Recursos</a>
+                        </div>
+                    </div>
+                    <div class="hero-mockup">
+                        <div class="mockup-card">
+                            <div class="mockup-header">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                            </div>
+                            <div class="mockup-body">
+                                <div class="mockup-field">
+                                    <label>URL Original</label>
+                                    <div class="mockup-input">https://seusite.com/campanha-marketing-2026/promocao-especial-verao</div>
+                                </div>
+                                <div class="mockup-arrow">⬇️</div>
+                                <div class="mockup-field">
+                                    <label>Link Encurtado</label>
+                                    <div class="mockup-input highlighted">encurta.vercel.app/verao-2026</div>
+                                </div>
+                                <div class="mockup-stats">
+                                    <div class="mockup-stat-item">
+                                        <span class="label">Cliques</span>
+                                        <span class="value count-animate">1.248</span>
+                                    </div>
+                                    <div class="mockup-stat-item">
+                                        <span class="label">Conversão</span>
+                                        <span class="value">94.8%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção de Recursos (Bento Grid) -->
+            <section id="features" class="features-section">
+                <div class="section-header">
+                    <h2 class="section-title">Gerenciamento completo de links</h2>
+                    <p class="section-subtitle">Descubra ferramentas avançadas de produtividade e análise para marcas, profissionais de marketing e desenvolvedores.</p>
+                </div>
+                <div class="bento-grid">
+                    <div class="bento-card col-2">
+                        <div class="bento-icon">⚡</div>
+                        <h3>Encurtamento Inteligente</h3>
+                        <p>Crie links curtos em milissegundos com suporte a slugs personalizados que reforçam a identidade da sua marca.</p>
+                    </div>
+                    <div class="bento-card">
+                        <div class="bento-icon">📊</div>
+                        <h3>Estatísticas em Tempo Real</h3>
+                        <p>Monitore cliques, origens, países e dispositivos de forma imediata.</p>
+                    </div>
+                    <div class="bento-card">
+                        <div class="bento-icon">📱</div>
+                        <h3>QR Codes Dinâmicos</h3>
+                        <p>Gere códigos QR para seus links instantaneamente para uso offline ou em mídias impressas.</p>
+                    </div>
+                    <div class="bento-card col-2">
+                        <div class="bento-icon">🤖</div>
+                        <h3>API para Bots</h3>
+                        <p>Integre o encurtador nos seus bots de Telegram, Discord ou WhatsApp de forma simples via chaves de API restritas.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção de Prova Social / Métricas -->
+            <section class="stats-section">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <h3>+10.000</h3>
+                        <p>Links Criados</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>+50.000</h3>
+                        <p>Cliques Rastreados</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>99.9%</h3>
+                        <p>Uptime de Roteamento</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>&lt; 50ms</h3>
+                        <p>Tempo de Redirecionamento</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção de Planos -->
+            <section id="pricing" class="pricing-section">
+                <div class="section-header">
+                    <h2 class="section-title">Escolha o plano ideal para você</h2>
+                    <p class="section-subtitle">De projetos pessoais a grandes marcas comerciais, temos a infraestrutura certa.</p>
+                </div>
+
+                <div class="pricing-grid">
+                    <!-- Plano Gratuito (Basic) -->
+                    <div class="pricing-card">
+                        <div class="card-badge">Gratuito</div>
+                        <h3 class="plan-price">R$ 0 <span>/ sempre</span></h3>
+                        <p class="plan-desc">Perfeito para quem está começando a simplificar links.</p>
+                        <ul class="plan-features">
+                            <li>✓ Links ilimitados</li>
+                            <li>✓ Slugs aleatórios</li>
+                            <li>✓ Histórico básico</li>
+                            <li class="disabled">✗ QR Codes Dinâmicos</li>
+                            <li class="disabled">✗ Suporte a API</li>
+                        </ul>
+                        <button class="btn btn-secondary btn-block" onclick="showView('view-login'); switchAuthTab('register')">Começar Agora</button>
+                    </div>
+
+                    <!-- Plano Pro (Destaque/Popular) -->
+                    <div class="pricing-card highlighted">
+                        <!-- Animação do Border Trail em CSS Puro -->
+                        <div class="border-trail-animation"></div>
+                        <div class="card-popular-badge">⭐ Mais Popular</div>
+                        <div class="card-badge highlighted">Pro</div>
+                        <h3 class="plan-price">R$ 19 <span>/ mês</span></h3>
+                        <p class="plan-desc">A melhor solução para criadores e profissionais de marketing.</p>
+                        <ul class="plan-features">
+                            <li>✓ Links ilimitados</li>
+                            <li>✓ Slugs personalizados ilimitados</li>
+                            <li>✓ Histórico avançado (sem expiração)</li>
+                            <li>✓ QR Codes Dinâmicos</li>
+                            <li>✓ Suporte à API de Integração</li>
+                        </ul>
+                        <button class="btn btn-primary btn-block" onclick="showView('view-login'); switchAuthTab('register')">Experimentar Grátis</button>
+                    </div>
+
+                    <!-- Plano Enterprise -->
+                    <div class="pricing-card">
+                        <div class="card-badge">Enterprise</div>
+                        <h3 class="plan-price">R$ 99 <span>/ mês</span></h3>
+                        <p class="plan-desc">Infraestrutura avançada de linkagem para grandes equipes.</p>
+                        <ul class="plan-features">
+                            <li>✓ Tudo do Pro</li>
+                            <li>✓ SLA de 99.99% garantido</li>
+                            <li>✓ APIs com limites estendidos</li>
+                            <li>✓ Domínios customizados</li>
+                            <li>✓ Suporte prioritário 24/7</li>
+                        </ul>
+                        <button class="btn btn-secondary btn-block" onclick="showView('view-login'); switchAuthTab('register')">Falar com Vendas</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer Principal -->
+            <footer class="main-footer">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <div class="logo">Encurta<span>URL</span></div>
+                        <p>O encurtador de links que você confia, monetizado de forma ética e profissional.</p>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Produto</h4>
+                        <a href="#features">Recursos</a>
+                        <a href="#pricing">Preços</a>
+                        <a href="#" onclick="showView('view-blog')">Blog</a>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Legal</h4>
+                        <a href="#" onclick="showView('view-terms')">Termos de Uso</a>
+                        <a href="#" onclick="showView('view-privacy')">Política de Privacidade</a>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2026 EncurtaURL. Todos os direitos reservados. Em conformidade com a LGPD.</p>
+                </div>
+            </footer>
+        </div>
+    </section>
+
+    <!-- 2. LOGIN / REGISTRO (Split Screen) -->
+    <section id="view-login" class="view-section">
+        <div class="auth-wrapper">
+            <!-- Coluna Formulário -->
+            <div class="auth-card-form">
+                <div class="header-actions">
+                    <button class="btn btn-secondary btn-sm" onclick="showView('view-landing')">
+                        ← Voltar para Home
+                    </button>
+                </div>
+                
+                <div class="auth-form-container">
+                    <h2 class="auth-card-title" id="auth-title">Acessar Conta</h2>
+                    
+                    <div class="auth-tabs">
+                        <button id="tab-login" class="tab-btn active" onclick="switchAuthTab('login')">Entrar</button>
+                        <button id="tab-register" class="tab-btn" onclick="switchAuthTab('register')">Cadastrar</button>
+                    </div>
+
+                    <!-- Form Login -->
+                    <form id="form-login" onsubmit="handleAuth(event, 'login')">
+                        <div class="input-group">
+                            <label for="login-email">E-mail</label>
+                            <input type="email" id="login-email" placeholder="nome@exemplo.com" required />
+                        </div>
+                        <div class="input-group">
+                            <label for="login-password">Senha</label>
+                            <input type="password" id="login-password" placeholder="Sua senha secreta" required />
+                        </div>
+                        <div class="auth-extra">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="login-remember">
+                                <span class="checkmark"></span>
+                                Lembrar-me
+                            </label>
+                            <a href="#" class="forgot-password" onclick="showToast('Recuperação de senha não disponível no mock.', true)">Esqueci minha senha</a>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Entrar na Conta</button>
+                    </form>
+
+                    <!-- Form Cadastro -->
+                    <form id="form-register" class="hidden" onsubmit="handleAuth(event, 'register')">
+                        <div class="input-group">
+                            <label for="register-fullname">Nome Completo</label>
+                            <input type="text" id="register-fullname" placeholder="Digite seu nome completo" required />
+                        </div>
+                        <div class="input-group">
+                            <label for="register-company">Nome da Empresa (Opcional)</label>
+                            <input type="text" id="register-company" placeholder="Ex: Minha Empresa LTDA" />
+                        </div>
+                        <div class="input-group">
+                            <label for="register-purpose">Finalidade de Uso</label>
+                            <select id="register-purpose" required>
+                                <option value="" disabled selected>Selecione uma opção...</option>
+                                <option value="pessoal">Uso Pessoal</option>
+                                <option value="marketing">Marketing / Afiliado</option>
+                                <option value="empresa">Corporativo / Empresa</option>
+                                <option value="desenvolvedor">Desenvolvedor / API</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="register-email">E-mail Corporativo ou Pessoal</label>
+                            <input type="email" id="register-email" placeholder="nome@exemplo.com" required />
+                        </div>
+                        <div class="input-group">
+                            <label for="register-password">Senha de Acesso</label>
+                            <input type="password" id="register-password" placeholder="Mínimo 8 caracteres (A-Z, 0-9, @)" required oninput="validatePasswordStrength(this.value)" />
+                            <div class="password-strength-container">
+                                <div id="password-strength" class="password-strength"></div>
+                            </div>
+                        </div>
+                        <div class="terms-checkbox">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="register-terms" required />
+                                <span class="checkmark"></span>
+                                Eu aceito os <a href="#" onclick="openModal('terms-modal')">Termos de Uso</a> e a <a href="#" onclick="openModal('privacy-modal')">Política de Privacidade</a>.
+                            </label>
+                        </div>
+                        <div class="terms-checkbox">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="register-comms" />
+                                <span class="checkmark"></span>
+                                Aceito receber comunicações da plataforma por e-mail.
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Criar Minha Conta Grátis</button>
+                    </form>
+
+                    <div class="divider">ou</div>
+
+                    <!-- Login com Google -->
+                    <button class="btn btn-google btn-block" onclick="loginWithGoogle()">
+                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google icon" style="width: 18px; height: 18px;" />
+                        <span>Continue with Google</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Coluna de Branding/Promoção -->
+            <div class="auth-card-promo">
+                <div class="promo-bg-aurora"></div>
+                <div class="promo-content">
+                    <span class="logo">Encurta<span>URL</span></span>
+                    <h3 class="promo-title">Gerenciamento profissional de links em um só lugar.</h3>
+                    <p class="promo-text">Monitore a performance das suas campanhas, gere códigos QR dinâmicos e impulsione a conversão dos seus links com estatísticas avançadas.</p>
+                    <div class="promo-features">
+                        <div class="p-feat-item">
+                            <span class="icon">✓</span>
+                            <span>Slugs personalizados que aumentam o CTR em até 34%</span>
+                        </div>
+                        <div class="p-feat-item">
+                            <span class="icon">✓</span>
+                            <span>Rastreamento em tempo real com estatísticas geográficas</span>
+                        </div>
+                        <div class="p-feat-item">
+                            <span class="icon">✓</span>
+                            <span>Integração de APIs flexível para automatizar seus fluxos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. DASHBOARD -->
+    <section id="view-dashboard" class="view-section">
+        <div class="dashboard-layout">
+            <!-- Sidebar Fixa -->
+            <aside class="dashboard-sidebar">
+                <div class="sidebar-header">
+                    <div class="logo">Encurta<span>URL</span></div>
+                </div>
+                <nav class="sidebar-menu">
+                    <a href="#overview" class="menu-item active" onclick="switchDashboardTab('overview')">
+                        <span class="icon">📊</span> Visão Geral
+                    </a>
+                    <a href="#links" class="menu-item" onclick="switchDashboardTab('links')">
+                        <span class="icon">🔗</span> Meus Links
+                    </a>
+                    <a href="#api" class="menu-item" onclick="switchDashboardTab('api')">
+                        <span class="icon">🤖</span> API Developer
+                    </a>
+                </nav>
+                <div class="sidebar-footer">
+                    <div class="user-profile">
+                        <div class="user-avatar" id="user-avatar-initials">U</div>
+                        <div class="user-details">
+                            <span class="user-name" id="user-display-name">Usuário</span>
+                            <span class="user-email" id="user-display-email">usuario@teste.com</span>
+                        </div>
+                    </div>
+                    <button class="btn-logout" onclick="logout()">Sair 🚪</button>
+                </div>
+            </aside>
+
+            <!-- Conteúdo Principal -->
+            <main class="dashboard-main">
+                <!-- Top Header Nav -->
+                <header class="dashboard-top-nav">
+                    <div>
+                        <h2>Visão Geral</h2>
+                        <p class="text-muted">Acompanhe a performance dos seus links em tempo real.</p>
                     </div>
                 </header>
-                
-                <div class="hero-content">
-                    <h2 class="hero-title">Simplifique seus links. Analise seus cliques.</h2>
-                    <p class="hero-subtitle">Encurte URLs longas, gerencie com facilidade, integre via API com seus bots e acompanhe estatísticas detalhadas em tempo real.</p>
-                    <button class="btn btn-primary btn-lg" onclick="showView('view-login'); switchAuthTab('register')">Começar Agora</button>
-                </div>
-            </div>
-        </section>
 
-        <!-- 2. LOGIN / REGISTRO -->
-        <section id="view-login" class="view-section">
-            <div class="box">
-                <div class="header-actions">
-                    <button class="btn btn-secondary btn-sm" onclick="showView('view-landing')">Voltar</button>
-                </div>
-                <h2 class="title" id="auth-title">Acessar Conta</h2>
-                
-                <!-- Abas -->
-                <div class="auth-tabs">
-                    <button id="tab-login" class="tab-btn active" onclick="switchAuthTab('login')">Login</button>
-                    <button id="tab-register" class="tab-btn" onclick="switchAuthTab('register')">Cadastro</button>
-                </div>
-
-                <!-- Form Login -->
-                <form id="form-login" onsubmit="handleAuth(event, 'login')">
-                    <div class="input-group">
-                        <input type="email" id="login-email" placeholder="E-mail" required />
+                <!-- Bento Grid de Estatísticas -->
+                <div class="dashboard-bento-grid">
+                    <div class="bento-stat-card">
+                        <span class="stat-icon">🔗</span>
+                        <span class="stat-title">Links Encurtados</span>
+                        <h3 id="stat-links-count">0</h3>
                     </div>
-                    <div class="input-group">
-                        <input type="password" id="login-password" placeholder="Senha" required />
+                    <div class="bento-stat-card">
+                        <span class="stat-icon">📈</span>
+                        <span class="stat-title">Cliques Totais</span>
+                        <h3 id="stat-clicks-count">0</h3>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Entrar</button>
-                </form>
-
-                <!-- Form Cadastro -->
-                <form id="form-register" class="hidden" onsubmit="handleAuth(event, 'register')">
-                    <div class="input-group">
-                        <input type="email" id="register-email" placeholder="E-mail" required />
+                    <div class="bento-stat-card">
+                        <span class="stat-icon">🎯</span>
+                        <span class="stat-title">Taxa de Conversão</span>
+                        <h3 id="stat-conversion-rate">94.8%</h3>
                     </div>
-                    <div class="input-group">
-                        <input type="password" id="register-password" placeholder="Senha (Min. 8 caracteres, A-Z, a-z, @)" required oninput="validatePasswordStrength(this.value)" />
-                        <div id="password-strength" class="password-strength"></div>
-                    </div>
-                    <div class="terms-checkbox">
-                        <input type="checkbox" id="register-terms" required />
-                        <label for="register-terms">Eu aceito os <a href="#" onclick="openModal('terms-modal')">Termos de Uso</a> e <a href="#" onclick="openModal('privacy-modal')">Política de Privacidade</a>.</label>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block">Criar Conta</button>
-                </form>
-
-                <div class="divider">ou</div>
-
-                <!-- Login com Google -->
-                <button class="btn btn-google btn-block" onclick="loginWithGoogle()">
-                    <svg viewBox="0 0 24 24" width="20" height="20">
-                        <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.136 4.114A5.99 5.99 0 0 1 7.99 12.5a5.99 5.99 0 0 1 6.002-6.015c1.45 0 2.76.513 3.79 1.488l3.18-3.18C18.913 2.825 15.772 1.636 12 1.636c-5.748 0-10.4 4.652-10.4 10.4 0 5.748 4.652 10.4 10.4 10.4 6 0 9.873-4.227 9.873-10.036 0-.622-.057-1.228-.158-1.782l-9.475-.333Z"/>
-                    </svg>
-                    <span>Entrar com o Google</span>
-                </button>
-            </div>
-        </section>
-
-        <!-- 3. DASHBOARD -->
-        <section id="view-dashboard" class="view-section">
-            <div class="box dashboard-box">
-                <div class="dashboard-header">
-                    <h3>Olá, <span id="user-display-email">usuario@teste.com</span></h3>
-                    <button class="btn btn-secondary btn-sm" onclick="logout()">Sair</button>
-                </div>
-
-                <!-- Stats Cards -->
-                <div class="stats-container">
-                    <div class="stat-card">
-                        <h4>Links Criados</h4>
-                        <p id="stat-links-count">0</p>
-                    </div>
-                    <div class="stat-card">
-                        <h4>Cliques Totais</h4>
-                        <p id="stat-clicks-count">0</p>
+                    <div class="bento-stat-card">
+                        <span class="stat-icon">⚡</span>
+                        <span class="stat-title">Tempo de Resposta</span>
+                        <h3>&lt; 50ms</h3>
                     </div>
                 </div>
 
-                <!-- Encurtador Interno -->
-                <div class="input-wrapper">
-                    <input class="input-url" id="dashboard-url" type="text" placeholder="Cole sua URL para encurtar..." autocomplete="off" />
-                </div>
-                <div class="box-buttons">
-                    <button class="btn btn-primary" onclick="encurtarUrl('dashboard-url')">Encurtar</button>
-                    <button class="btn btn-secondary" onclick="copiar('dashboard-url')">Copiar</button>
-                </div>
-
-                <!-- Seção API para Bots -->
-                <div class="api-section">
-                    <h4>Chave de API (Integração de Bots)</h4>
-                    <div class="api-key-container">
-                        <input type="text" id="api-key-input" readonly value="Clique em gerar..." />
-                        <button class="btn btn-secondary btn-sm" onclick="generateApiKey()">Gerar</button>
+                <!-- Formulário Encurtador Avançado + Gráfico de Acessos -->
+                <div class="dashboard-row">
+                    <!-- Form Card -->
+                    <div class="dashboard-card form-card">
+                        <h3>Criar Link Curto</h3>
+                        <div class="input-group">
+                            <label for="dashboard-url">URL Original</label>
+                            <input type="text" id="dashboard-url" placeholder="Cole seu link longo aqui (ex: https://site.com/...)" required />
+                        </div>
+                        <div class="input-group">
+                            <label for="dashboard-slug">Slug Personalizado (Opcional)</label>
+                            <div class="slug-input-wrapper">
+                                <span class="slug-prefix">encurta.vercel.app/</span>
+                                <input type="text" id="dashboard-slug" placeholder="ex: verao" />
+                            </div>
+                        </div>
+                        
+                        <!-- Accordion de Configurações Avançadas -->
+                        <details class="advanced-settings-accordion">
+                            <summary>Configurações Avançadas (Opcional)</summary>
+                            <div class="accordion-content">
+                                <div class="input-group">
+                                    <label for="dashboard-expire">Data de Expiração</label>
+                                    <input type="date" id="dashboard-expire" />
+                                </div>
+                                <div class="input-group">
+                                    <label for="dashboard-password">Senha de Proteção</label>
+                                    <input type="password" id="dashboard-password" placeholder="Digite uma senha de proteção" />
+                                </div>
+                            </div>
+                        </details>
+                        
+                        <button class="btn btn-primary btn-block" onclick="encurtarUrlDashboard()">Encurtar URL 🚀</button>
                     </div>
-                    <small>Use esta chave enviando-a no Header `Authorization: Bearer <sua_chave>`</small>
+
+                    <!-- Chart Card -->
+                    <div class="dashboard-card chart-card">
+                        <h3>Cliques ao Longo do Tempo</h3>
+                        <div class="chart-container" style="position: relative; height: 100%; width: 100%;">
+                            <canvas id="clicks-chart"></canvas>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Histórico de Links -->
-                <div class="history-section">
-                    <h4>Seus Links</h4>
+                <!-- Tabela de Links Recentes -->
+                <div class="dashboard-card table-card" id="section-my-links">
+                    <h3>Meus Links Encurtados</h3>
                     <div class="table-responsive">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Original</th>
-                                    <th>Curto</th>
+                                    <th>URL Original</th>
+                                    <th>Link Encurtado</th>
                                     <th>Cliques</th>
                                     <th>Ações</th>
                                 </tr>
@@ -153,37 +480,322 @@
                         </table>
                     </div>
                 </div>
-            </div>
-        </section>
-    </div>
 
-    <!-- MODAL: Termos de Uso -->
-    <div id="terms-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('terms-modal')">&times;</span>
-            <h3>Termos de Uso</h3>
-            <div class="modal-body">
-                <p><strong>1. Aceitação dos Termos</strong><br>Ao utilizar nossa plataforma de encurtamento de URL, você concorda em cumprir e ser regido por estes Termos de Uso.</p>
-                <p><strong>2. Uso Permitido</strong><br>Você se compromete a não utilizar o serviço para encurtar links que direcionem a conteúdos maliciosos, ilegais, vírus ou phishing. O descumprimento resultará na suspensão imediata da sua conta.</p>
-                <p><strong>3. Responsabilidade</strong><br>Não nos responsabilizamos pelo conteúdo dos links gerados pelos usuários.</p>
-            </div>
-            <button class="btn btn-primary btn-sm btn-block" onclick="closeModal('terms-modal')">Fechar</button>
+                <!-- API Developer Integration -->
+                <div class="dashboard-card api-card" id="section-api-developer">
+                    <h3>API Developer (Integração de Bots)</h3>
+                    <p class="text-muted" style="margin-bottom: 20px;">Use a nossa API restrita para integrar seu encurtador com bots de Telegram, Discord ou automações externas.</p>
+                    <div class="api-key-container">
+                        <input type="text" id="api-key-input" readonly value="Clique em gerar chave de API..." />
+                        <button class="btn btn-secondary" onclick="generateApiKey()">Gerar Chave</button>
+                    </div>
+                    <small class="text-muted" style="margin-top: 10px; display: block;">Envie a chave no cabeçalho <code>Authorization: Bearer &lt;sua_chave&gt;</code> em suas requisições.</small>
+                </div>
+            </main>
         </div>
-    </div>
+    </section>
 
-    <!-- MODAL: Política de Privacidade -->
-    <div id="privacy-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('privacy-modal')">&times;</span>
-            <h3>Política de Privacidade</h3>
-            <div class="modal-body">
-                <p><strong>1. Coleta de Dados</strong><br>Coletamos seu endereço de e-mail no cadastro e informações básicas de cliques (IP, país de origem e data/hora) para fins estatísticos e prevenção de abusos.</p>
-                <p><strong>2. Armazenamento Seguro</strong><br>Em conformidade com a LGPD, seus dados pessoais são armazenados de forma segura e criptografada e não são compartilhados com terceiros sob nenhuma hipótese.</p>
-                <p><strong>3. Seus Direitos</strong><br>Você possui direito total a solicitar a exclusão de sua conta e de todos os seus dados a qualquer momento.</p>
+    <!-- 4. BLOG — LISTAGEM DE POSTS -->
+    <section id="view-blog" class="view-section">
+        <div class="legal-page-wrapper">
+            <!-- Header com voltar -->
+            <div class="legal-page-header">
+                <button class="btn-back" onclick="showView('view-landing')">← Voltar</button>
+                <div class="logo">Encurta<span>URL</span></div>
             </div>
-            <button class="btn btn-primary btn-sm btn-block" onclick="closeModal('privacy-modal')">Fechar</button>
+
+            <div class="blog-hero">
+                <span class="badge">📝 Dicas & Estratégias</span>
+                <h1>Blog EncurtaURL</h1>
+                <p>Conteúdo de qualidade sobre marketing digital, gestão de links e estratégias de crescimento.</p>
+            </div>
+
+            <!-- Grid de Posts -->
+            <div class="blog-posts-grid" id="blog-posts-grid">
+                <!-- Posts carregados via JS do Supabase / posts estáticos -->
+                <article class="blog-post-card" onclick="showBlogPost('encurtamento-links-seo')">
+                    <div class="post-cover" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+                        <span class="post-emoji">🔗</span>
+                    </div>
+                    <div class="post-body">
+                        <div class="post-meta">
+                            <span class="post-tag">SEO</span>
+                            <span class="post-date">8 de Jul, 2026</span>
+                        </div>
+                        <h2>Como links encurtados melhoram seu SEO e aumentam o CTR em até 34%</h2>
+                        <p>Descubra como a qualidade dos seus links impacta diretamente na percepção de confiança do usuário e nas taxas de clique das suas campanhas.</p>
+                        <div class="post-footer">
+                            <span class="read-time">⏱ 5 min de leitura</span>
+                            <span class="post-arrow">→</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="blog-post-card" onclick="showBlogPost('api-bots-automacao')">
+                    <div class="post-cover" style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 100%);">
+                        <span class="post-emoji">🤖</span>
+                    </div>
+                    <div class="post-body">
+                        <div class="post-meta">
+                            <span class="post-tag">Automação</span>
+                            <span class="post-date">5 de Jul, 2026</span>
+                        </div>
+                        <h2>Integrando o EncurtaURL com seu Bot de Telegram ou Discord via API</h2>
+                        <p>Um guia passo a passo para automatizar o encurtamento de links nos seus bots usando nossa API REST com autenticação por Bearer Token.</p>
+                        <div class="post-footer">
+                            <span class="read-time">⏱ 8 min de leitura</span>
+                            <span class="post-arrow">→</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="blog-post-card" onclick="showBlogPost('lgpd-rastreamento-links')">
+                    <div class="post-cover" style="background: linear-gradient(135deg, #1a0533 0%, #2d1b69 100%);">
+                        <span class="post-emoji">🔒</span>
+                    </div>
+                    <div class="post-body">
+                        <div class="post-meta">
+                            <span class="post-tag">Privacidade</span>
+                            <span class="post-date">1 de Jul, 2026</span>
+                        </div>
+                        <h2>LGPD e rastreamento de links: o que você precisa saber em 2026</h2>
+                        <p>Como coletar dados de cliques de forma ética, transparente e em conformidade com a Lei Geral de Proteção de Dados Pessoais.</p>
+                        <div class="post-footer">
+                            <span class="read-time">⏱ 6 min de leitura</span>
+                            <span class="post-arrow">→</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="blog-post-card" onclick="showBlogPost('qr-codes-marketing')">
+                    <div class="post-cover" style="background: linear-gradient(135deg, #0d0d0d 0%, #1f1f1f 100%);">
+                        <span class="post-emoji">📱</span>
+                    </div>
+                    <div class="post-body">
+                        <div class="post-meta">
+                            <span class="post-tag">Marketing</span>
+                            <span class="post-date">25 de Jun, 2026</span>
+                        </div>
+                        <h2>QR Codes dinâmicos: a estratégia que marcas usam para campanhas offline</h2>
+                        <p>Aprenda a usar QR codes dinâmicos para rastrear conversões em anúncios impressos, embalagens e eventos presenciais com links encurtados.</p>
+                        <div class="post-footer">
+                            <span class="read-time">⏱ 4 min de leitura</span>
+                            <span class="post-arrow">→</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="blog-post-card" onclick="showBlogPost('slug-personalizado-marca')">
+                    <div class="post-cover" style="background: linear-gradient(135deg, #1a1000 0%, #332200 100%);">
+                        <span class="post-emoji">✨</span>
+                    </div>
+                    <div class="post-body">
+                        <div class="post-meta">
+                            <span class="post-tag">Branding</span>
+                            <span class="post-date">18 de Jun, 2026</span>
+                        </div>
+                        <h2>Slugs personalizados: como a identidade da URL fortalece sua marca</h2>
+                        <p>Links como <strong>marca.co/promo-verao</strong> geram muito mais confiança e cliques do que links aleatórios. Entenda a psicologia por trás disso.</p>
+                        <div class="post-footer">
+                            <span class="read-time">⏱ 3 min de leitura</span>
+                            <span class="post-arrow">→</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="blog-post-card" onclick="showBlogPost('adsense-saas-monetizacao')">
+                    <div class="post-cover" style="background: linear-gradient(135deg, #001a0d 0%, #003320 100%);">
+                        <span class="post-emoji">💰</span>
+                    </div>
+                    <div class="post-body">
+                        <div class="post-meta">
+                            <span class="post-tag">Monetização</span>
+                            <span class="post-date">10 de Jun, 2026</span>
+                        </div>
+                        <h2>Como monetizar um SaaS de encurtamento de links com Google AdSense</h2>
+                        <p>Estratégias de posicionamento de anúncios, melhores práticas de experiência do usuário e como maximizar o RPM sem prejudicar a conversão.</p>
+                        <div class="post-footer">
+                            <span class="read-time">⏱ 7 min de leitura</span>
+                            <span class="post-arrow">→</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Footer do Blog -->
+            <div class="legal-footer">
+                <p>© 2026 EncurtaURL · <a href="#" onclick="showView('view-terms')">Termos</a> · <a href="#" onclick="showView('view-privacy')">Privacidade</a></p>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <!-- 5. POST DO BLOG — LEITURA INDIVIDUAL -->
+    <section id="view-blog-post" class="view-section">
+        <div class="legal-page-wrapper blog-post-page">
+            <div class="legal-page-header">
+                <button class="btn-back" onclick="showView('view-blog')">← Voltar ao Blog</button>
+                <div class="logo">Encurta<span>URL</span></div>
+            </div>
+            <div id="blog-post-content" class="blog-post-article">
+                <!-- Conteúdo injetado via JS -->
+            </div>
+            <div class="legal-footer">
+                <p>© 2026 EncurtaURL · <a href="#" onclick="showView('view-terms')">Termos</a> · <a href="#" onclick="showView('view-privacy')">Privacidade</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. TERMOS DE USO (Página Completa) -->
+    <section id="view-terms" class="view-section">
+        <div class="legal-page-wrapper">
+            <div class="legal-page-header">
+                <button class="btn-back" onclick="showView('view-landing')">← Voltar</button>
+                <div class="logo">Encurta<span>URL</span></div>
+            </div>
+
+            <div class="legal-content">
+                <div class="legal-hero">
+                    <span class="badge">📄 Legal</span>
+                    <h1>Termos de Uso</h1>
+                    <p class="legal-date">Última atualização: 9 de julho de 2026</p>
+                </div>
+
+                <div class="legal-body">
+                    <h2>1. Aceitação dos Termos</h2>
+                    <p>Ao acessar e utilizar a plataforma EncurtaURL (encurta-url-rho.vercel.app), você declara que leu, compreendeu e concorda em cumprir estes Termos de Uso na íntegra. Se você não concorda com qualquer parte destes termos, não deve utilizar os nossos serviços.</p>
+
+                    <h2>2. Descrição do Serviço</h2>
+                    <p>O EncurtaURL é uma plataforma SaaS de encurtamento de URLs que permite aos usuários criar links curtos, personalizados, com monitoramento de cliques e integração via API. O serviço está disponível nas modalidades Gratuita, Pro e Enterprise conforme descrito na nossa página de planos.</p>
+
+                    <h2>3. Cadastro e Conta de Usuário</h2>
+                    <p>Para acessar os recursos completos da plataforma, você deve criar uma conta fornecendo um endereço de e-mail válido e uma senha. Você é responsável por manter a confidencialidade das suas credenciais de acesso e por todas as atividades realizadas na sua conta.</p>
+                    <ul>
+                        <li>Você deve ter pelo menos 13 anos de idade para usar o serviço.</li>
+                        <li>Cada pessoa pode criar apenas uma conta gratuita por e-mail.</li>
+                        <li>Você concorda em notificar imediatamente o EncurtaURL em caso de uso não autorizado da sua conta.</li>
+                    </ul>
+
+                    <h2>4. Uso Permitido e Proibições</h2>
+                    <p>Você concorda em utilizar o serviço exclusivamente para fins legais e em conformidade com estes Termos. É expressamente proibido utilizar o EncurtaURL para:</p>
+                    <ul>
+                        <li>Encurtar links que direcionem a conteúdo malicioso, vírus, malware ou phishing;</li>
+                        <li>Distribuir spam, mensagens não solicitadas ou material fraudulento;</li>
+                        <li>Encurtar links para sites de pirataria, conteúdo pornográfico envolvendo menores ou atividades ilegais;</li>
+                        <li>Tentar obter acesso não autorizado a sistemas ou realizar engenharia reversa da plataforma;</li>
+                        <li>Violar os direitos de propriedade intelectual de terceiros.</li>
+                    </ul>
+                    <p>O descumprimento dessas regras resultará na suspensão imediata e permanente da conta, sem aviso prévio.</p>
+
+                    <h2>5. Propriedade Intelectual</h2>
+                    <p>Todo o código-fonte, design, logotipos, marcas registradas e conteúdo da plataforma EncurtaURL são de propriedade exclusiva dos seus desenvolvedores. É proibida a reprodução, distribuição ou criação de obras derivadas sem autorização prévia e por escrito.</p>
+
+                    <h2>6. Disponibilidade e Suporte</h2>
+                    <p>O EncurtaURL busca manter o serviço disponível 24 horas por dia, 7 dias por semana, mas não garante disponibilidade ininterrupta. Manutenções programadas serão comunicadas com antecedência. Suporte técnico está disponível via e-mail para todos os planos.</p>
+
+                    <h2>7. Cancelamento e Exclusão</h2>
+                    <p>Você pode cancelar sua conta a qualquer momento. Após o cancelamento, seus dados pessoais serão excluídos em até 30 dias, conforme previsto na LGPD, exceto os dados que precisam ser retidos por obrigação legal.</p>
+
+                    <h2>8. Limitação de Responsabilidade</h2>
+                    <p>O EncurtaURL não se responsabiliza pelo conteúdo dos links criados pelos usuários, por danos diretos ou indiretos decorrentes do uso ou impossibilidade de uso do serviço, ou por ações de terceiros acessando os links encurtados.</p>
+
+                    <h2>9. Alterações nos Termos</h2>
+                    <p>Reservamo-nos o direito de modificar estes Termos a qualquer momento. Alterações significativas serão comunicadas por e-mail ou notificação dentro da plataforma com pelo menos 15 dias de antecedência.</p>
+
+                    <h2>10. Legislação Aplicável</h2>
+                    <p>Estes Termos são regidos pelas leis da República Federativa do Brasil. Fica eleito o foro da cidade de São Paulo - SP como competente para dirimir quaisquer conflitos decorrentes deste instrumento.</p>
+                </div>
+            </div>
+
+            <div class="legal-footer">
+                <p>© 2026 EncurtaURL · <a href="#" onclick="showView('view-privacy')">Política de Privacidade</a> · <a href="#" onclick="showView('view-landing')">Início</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. POLÍTICA DE PRIVACIDADE (Página Completa) -->
+    <section id="view-privacy" class="view-section">
+        <div class="legal-page-wrapper">
+            <div class="legal-page-header">
+                <button class="btn-back" onclick="showView('view-landing')">← Voltar</button>
+                <div class="logo">Encurta<span>URL</span></div>
+            </div>
+
+            <div class="legal-content">
+                <div class="legal-hero">
+                    <span class="badge">🔒 Privacidade</span>
+                    <h1>Política de Privacidade</h1>
+                    <p class="legal-date">Última atualização: 9 de julho de 2026 · Em conformidade com a LGPD (Lei nº 13.709/2018)</p>
+                </div>
+
+                <div class="legal-body">
+                    <h2>1. Controlador dos Dados</h2>
+                    <p>O controlador dos seus dados pessoais é o <strong>EncurtaURL</strong>, plataforma de encurtamento de links disponível em encurta-url-rho.vercel.app. Para exercer seus direitos ou esclarecer dúvidas, entre em contato pelo e-mail: <strong>contato@encurtaurl.com.br</strong>.</p>
+
+                    <h2>2. Dados que Coletamos</h2>
+                    <p>Coletamos apenas os dados estritamente necessários para a prestação do serviço:</p>
+                    <ul>
+                        <li><strong>Dados de Cadastro:</strong> Nome completo, endereço de e-mail, empresa (opcional) e finalidade de uso, fornecidos voluntariamente no cadastro.</li>
+                        <li><strong>Dados de Uso:</strong> URLs originais e links encurtados criados na plataforma, data e hora de criação.</li>
+                        <li><strong>Dados de Cliques:</strong> Endereço IP anonimizado, país de origem, dispositivo e navegador utilizados nos acessos aos links encurtados.</li>
+                        <li><strong>Dados de Sessão:</strong> Tokens de autenticação e cookies de sessão, necessários para manter você logado na plataforma.</li>
+                    </ul>
+
+                    <h2>3. Finalidade e Base Legal do Tratamento</h2>
+                    <p>Tratamos seus dados pessoais com base nas seguintes hipóteses legais previstas pela LGPD (Art. 7º):</p>
+                    <ul>
+                        <li><strong>Execução de Contrato (Art. 7º, V):</strong> Para criar sua conta, autenticar seu acesso e fornecer as funcionalidades contratadas.</li>
+                        <li><strong>Legítimo Interesse (Art. 7º, IX):</strong> Para melhorar a plataforma com base em dados de uso agregados e anonimizados.</li>
+                        <li><strong>Consentimento (Art. 7º, I):</strong> Para envio de comunicações de marketing, quando você optar por recebê-las no cadastro.</li>
+                        <li><strong>Cumprimento de Obrigação Legal (Art. 7º, II):</strong> Para retenção de logs conforme exigido pelo Marco Civil da Internet.</li>
+                    </ul>
+
+                    <h2>4. Compartilhamento de Dados</h2>
+                    <p>Seus dados pessoais <strong>não são vendidos</strong> a terceiros. Podemos compartilhar dados apenas com:</p>
+                    <ul>
+                        <li><strong>Supabase Inc.:</strong> Nosso provedor de banco de dados e autenticação (processador de dados), contratado com cláusulas de proteção de dados.</li>
+                        <li><strong>Vercel Inc.:</strong> Nosso provedor de hospedagem, que processa dados apenas para fins de entrega da aplicação.</li>
+                        <li><strong>Google LLC:</strong> Para exibição de anúncios Google AdSense, que pode utilizar cookies de terceiros para personalização.</li>
+                        <li><strong>Autoridades Públicas:</strong> Quando exigido por lei, decisão judicial ou regulamento aplicável.</li>
+                    </ul>
+
+                    <h2>5. Cookies e Tecnologias de Rastreamento</h2>
+                    <p>Utilizamos os seguintes tipos de cookies:</p>
+                    <ul>
+                        <li><strong>Cookies Essenciais:</strong> Necessários para o funcionamento da plataforma (autenticação, sessão). Não podem ser recusados.</li>
+                        <li><strong>Cookies de Análise:</strong> Usados para entender como os usuários interagem com a plataforma (dados anonimizados).</li>
+                        <li><strong>Cookies de Publicidade:</strong> Utilizados pelo Google AdSense para exibir anúncios relevantes. Você pode gerenciá-los nas configurações do seu navegador ou no painel do Google.</li>
+                    </ul>
+
+                    <h2>6. Seus Direitos como Titular de Dados (LGPD, Art. 18)</h2>
+                    <p>Você possui os seguintes direitos, que podem ser exercidos a qualquer momento pelo e-mail de contato:</p>
+                    <ul>
+                        <li><strong>Acesso:</strong> Solicitar uma cópia de todos os seus dados pessoais tratados por nós.</li>
+                        <li><strong>Correção:</strong> Solicitar a correção de dados incompletos, inexatos ou desatualizados.</li>
+                        <li><strong>Exclusão:</strong> Solicitar a exclusão de seus dados pessoais e a encerramento da sua conta.</li>
+                        <li><strong>Portabilidade:</strong> Receber seus dados em formato estruturado e legível por máquina.</li>
+                        <li><strong>Revogação do Consentimento:</strong> Retirar o consentimento para tratamentos baseados nessa base legal a qualquer momento.</li>
+                        <li><strong>Oposição:</strong> Opor-se a tratamentos baseados em legítimo interesse.</li>
+                    </ul>
+
+                    <h2>7. Segurança dos Dados</h2>
+                    <p>Adotamos medidas técnicas e organizacionais adequadas para proteger seus dados, incluindo: criptografia em trânsito (TLS 1.3), senhas armazenadas com hash bcrypt, autenticação JWT com expiração curta, controle de acesso granular via Row Level Security (RLS) do Supabase e monitoramento de acessos suspeitos.</p>
+
+                    <h2>8. Retenção de Dados</h2>
+                    <p>Mantemos seus dados pessoais pelo tempo necessário para a prestação do serviço ou cumprimento de obrigações legais. Após o cancelamento da conta, os dados são excluídos em até 30 dias. Logs de acesso são mantidos por 6 meses conforme o Marco Civil da Internet.</p>
+
+                    <h2>9. Transferência Internacional de Dados</h2>
+                    <p>Seus dados podem ser processados nos Estados Unidos (onde a Supabase e a Vercel estão sediadas), mas apenas com garantias adequadas de proteção, em conformidade com o Art. 33 da LGPD.</p>
+
+                    <h2>10. Encarregado de Proteção de Dados (DPO)</h2>
+                    <p>O responsável pela proteção de dados pessoais do EncurtaURL pode ser contatado pelo e-mail: <strong>privacidade@encurtaurl.com.br</strong>. Você também tem o direito de apresentar reclamação à Autoridade Nacional de Proteção de Dados (ANPD).</p>
+                </div>
+            </div>
+
+            <div class="legal-footer">
+                <p>© 2026 EncurtaURL · <a href="#" onclick="showView('view-terms')">Termos de Uso</a> · <a href="#" onclick="showView('view-landing')">Início</a></p>
+            </div>
+        </div>
+    </section>
 
     <!-- Toast Notification -->
     <div id="toast" class="toast"></div>
